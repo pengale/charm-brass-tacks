@@ -9,6 +9,7 @@
 import logging
 import time
 
+from charms.brass_tacks.v0.planned_units_plus import projected_net
 from ops.charm import CharmBase
 from ops.main import main
 from ops.model import ActiveStatus, MaintenanceStatus
@@ -23,9 +24,19 @@ class BrassTacksCharm(CharmBase):
         super().__init__(*args)
         self.framework.observe(self.on.install, self._on_install)
         self.framework.observe(self.on["brass-tack"].relation_broken, self._on_broken)
+        self.framework.observe(self.on.planned_action, self._on_planned_action)
 
     def _on_install(self, event):
         self.unit.status = ActiveStatus()
+
+    def _on_planned_action(self, event):
+        self.model._backend._run = lambda *args, **kwargs: {
+            'units': [
+                {'life': 'running'},  # TODO lookup real value
+                {'life': 'dying'}
+                ]
+        }
+        event.set_results({"planned": projected_net(self)})
 
     def _on_broken(self, event):
         delay = float(self.config["delay"])
