@@ -1,0 +1,16 @@
+# Copyright 2022 Penelope Valentine Gale
+# See LICENSE file for licensing details.
+
+# For a complete list of supported options, see:
+# https://juju.is/docs/sdk/metadata-reference
+name: brass-tacks
+display-name: |
+  brass-tacks
+description: |
+  Experimental libraries.
+summary: |
+  Charm to house tests for experimental libraries written by Penny Gale.
+peers:
+    brass-tack:
+        interface: brassy
+
